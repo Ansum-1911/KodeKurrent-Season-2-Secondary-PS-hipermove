@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HiperMove</title>
+<style>
+  body{margin:0;padding:24px;font-family:system-ui,sans-serif;background:#0f1419;color:#e8eaed}
+  h1{margin:0 0 4px} .sub{color:#9aa0a6;margin-bottom:18px}
+  .wrap{position:relative;display:inline-block;max-width:100%}
+  video{display:block;max-width:100%;max-height:65vh;border-radius:12px;background:#000}
+  canvas{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
+  .stats{display:flex;gap:12px;margin:16px 0;flex-wrap:wrap}
+  .card{background:#1b222c;border-radius:12px;padding:14px 22px;min-width:120px}
+  .card b{display:block;font-size:34px;color:#00e5a0} .card span{color:#9aa0a6;font-size:13px}
+  #status{color:#9aa0a6;margin-bottom:12px}
+  #live{color:#9aa0a6;font-size:13px;margin-top:8px;font-family:monospace}
+  .tune{margin:12px 0;color:#9aa0a6;font-size:14px}
+  .tune input{vertical-align:middle;width:220px}
+  button{background:#00e5a0;color:#06251b;border:0;border-radius:10px;padding:10px 18px;font-weight:600;cursor:pointer}
+  button:disabled{opacity:.4;cursor:not-allowed}
+  #explanation{margin-top:16px;max-width:700px;line-height:1.6;white-space:pre-wrap}
+  .note{margin-top:24px;color:#9aa0a6;font-size:12px}
+</style>
+</head>
+<body>
+  <h1>HiperMove</h1>
+  <div class="sub">AI movement assistant: upload a squat video (front or side view)</div>
+
+  <div id="status">Loading pose model...</div>
+  <input type="file" id="file" accept="video/*" disabled>
+
+  <div class="tune">
+    Rep sensitivity (move left to catch smaller reps):
+    <input type="range" id="sens" min="0.02" max="0.12" step="0.005" value="0.05">
+    <span id="sensVal">0.050</span>
+  </div>
+
+  <div class="wrap">
+    <video id="video" controls muted playsinline></video>
+    <canvas id="canvas"></canvas>
+  </div>
+  <div id="live">phase: - | depth: -</div>
+
+  <div class="stats">
+    <div class="card"><b id="reps">0</b><span>Reps</span></div>
+    <div class="card"><b id="depth">--</b><span>Squat depth (%)</span></div>
+    <div class="card"><b id="deepest">--</b><span>Deepest (%)</span></div>
+  </div>
+
+  <button id="explainBtn" disabled>Explain my session</button>
+  <div id="explanation"></div>
+  <div class="note">Results are approximate and not medical advice.</div>
+
+<script type="module">
+import { PoseLandmarker, FilesetResolver, DrawingUtils }
+  from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/+esm";
+
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+const drawing = new DrawingUtils(ctx);
+const $ = (id) => document.getElementById(id);
+
+const MIN_REP_GAP = 0.4;   // seconds between reps
+
+let landmarker;
+let running = false;
+let phase, reps, smooth, standing, deepest, lastTime, lastRepAt, repTimes, peak, valley;
+
+function resetStats() {
+  phase = "up"; reps = 0; smooth = null; standing = 0; deepest = 0;
+  peak = 0; valley = 1;
+  lastTime = -1; lastRepAt = -10; repTimes = [];
+  $("reps").textContent = "0"; $("depth").textContent = "--"; $("deepest").textContent = "--";
+  $("live").textContent = "phase: - | depth: -";
+  $("explanation").textContent = "";
+}
+resetStats();
+
+$("sens").addEventListener("input", () => {
+  $("sensVal").textContent = parseFloat($("sens").value).toFixed(3);
+});
+
+async function init() {
+  const fileset = await FilesetResolver.forVisionTasks(
+    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm");
+  landmarker = await PoseLandmarker.createFromOptions(fileset, {
+    baseOptions: {
+      modelAssetPath: "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task"
+    },
+    runningMode: "VIDEO",
+    numPoses: 1
+  });
+  $("status").textContent = "Model ready. Upload a video, then press play.";
+  $("file").disabled = false;
+}
+
+function countReps(lm) {
+  const ok = [11, 12, 23, 24, 27, 28].every(i => (lm[i].visibility ?? 1) > 0.5);
+  if (!ok) { $("live").textContent = "phase: " + phase + " | body not fully visible"; return; }
+
+  const sh = (lm[11].y + lm[12].y) / 2;
+  const hip = (lm[23].y + lm[24].y) / 2;
+  const ank = (lm[27].y + lm[28].y) / 2;
+  const body = ank - sh;
+  if (body < 0.1) return;
+
+  const raw = (ank - hip) / body;                    // high when standing, lower when squatting
+  smooth = smooth === null ? raw : smooth + 0.4 * (raw - smooth);
+  standing = Math.max(standing, smooth);
+  const depth = Math.max(0, 1 - smooth / standing);  // for display only
+
+  $("depth").textContent = Math.round(depth * 100);
+  if (depth > deepest) { deepest = depth; $("deepest").textContent = Math.round(deepest * 100); }
+
+  // Swing-based counting: drop by SWING, then rise by SWING = one rep
+  const swing = parseFloat($("sens").value);
+  const t = video.currentTime;
+  if (phase === "up") {
+    peak = Math.max(peak, smooth);
+    if (peak - smooth > swing) { phase = "down"; valley = smooth; }
+  } else {
+    valley = Math.min(valley, smooth);
+    if (smooth - valley > swing && t - lastRepAt > MIN_REP_GAP) {
+      phase = "up"; peak = smooth;
+      reps++;
+      if (lastRepAt > 0) repTimes.push(t - lastRepAt);
+      lastRepAt = t;
+      $("reps").textContent = reps;
+    }
+  }
+  $("live").textContent = `phase: ${phase} | depth: ${Math.round(depth * 100)}% | swing needed: ${swing.toFixed(3)}`;
+}
+
+function loop() {
+  if (video.paused || video.ended) { running = false; return; }
+  if (video.currentTime !== lastTime) {
+    lastTime = video.currentTime;
+    const res = landmarker.detectForVideo(video, performance.now());
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (res.landmarks.length) {
+      const lm = res.landmarks[0];
+      drawing.drawConnectors(lm, PoseLandmarker.POSE_CONNECTIONS, { color: "#ffffff", lineWidth: 2 });
+      drawing.drawLandmarks(lm, { color: "#00e5a0", radius: 3 });
+      countReps(lm);
+    }
+  }
+  requestAnimationFrame(loop);
+}
+
+$("file").addEventListener("change", (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  video.src = URL.createObjectURL(f);
+  resetStats();
+  $("explainBtn").disabled = true;
+});
+
+video.addEventListener("loadedmetadata", () => {
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  video.playbackRate = 0.75;   // slower playback = more frames analysed = fewer missed reps
+});
+video.addEventListener("play", () => {
+  if (video.currentTime < 0.3) resetStats();
+  if (!running) { running = true; loop(); }
+});
+video.addEventListener("ended", () => {
+  $("status").textContent = `Done: ${reps} reps detected.`;
+  $("explainBtn").disabled = false;
+});
+
+window.getSession = () => ({
+  exercise: "squat",
+  reps,
+  deepestDepthPercent: Math.round(deepest * 100),
+  avgSecondsPerRep: repTimes.length
+    ? +(repTimes.reduce((a, b) => a + b, 0) / repTimes.length).toFixed(1) : null,
+  durationSeconds: Math.round(video.duration)
+});
+
+document.getElementById("explainBtn").addEventListener("click", async () => {
+  const btn = document.getElementById("explainBtn");
+  const out = document.getElementById("explanation");
+  btn.disabled = true;
+  out.textContent = "Gemma 4 is analysing your session...";
+  try {
+    const r = await fetch("/api/explain", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(window.getSession())
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || "Request failed");
+    out.textContent = data.explanation;
+  } catch (err) {
+    out.textContent = "Could not get explanation: " + err.message;
+  }
+  btn.disabled = false;
+});
+init();
+</script>
+</body>
+</html>
