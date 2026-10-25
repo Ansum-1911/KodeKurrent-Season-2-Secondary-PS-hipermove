@@ -27,13 +27,13 @@
 ## 📸 Screenshots & Demo Preview
 
 ### 1. Live Video Analysis & Skeleton Overlay
-![Live Analysis](screenshot1.jpg)
+<img width="1900" height="906" alt="Live Analysis" src="https://github.com/user-attachments/assets/ff5a511f-ec83-44ea-9ca2-87130f615c25" />
 
 ### 2. Hip Motion Curve & Rep Logs
-![Hip Motion Graph](screenshot2.png)
+<img width="1897" height="887" alt="Hip Motion Graph" src="https://github.com/user-attachments/assets/3be2efe3-cc3b-4492-b674-b8619eab4df3" />
 
 ### 3. Gemma AI Coaching Note
-![Gemma Coach Notes](screenshot3.png)
+<img width="1896" height="857" alt="Gemma Coach Notes" src="https://github.com/user-attachments/assets/0fe4f486-3e09-4b40-a2a7-132c75d2f899" />
 
 ---
 
@@ -107,6 +107,4 @@ Ansum Sanal
 
 Aman R.D
 
-Srithan Sharma<img width="1897" height="887" alt="Screenshot 2026-10-25 183515" src="https://github.com/user-attachments/assets/3be2efe3-cc3b-4492-b674-b8619eab4df3" />
-<img width="1896" height="857" alt="Screenshot 2026-10-25 183545" src="https://github.com/user-attachments/assets/0fe4f486-3e09-4b40-a2a7-132c75d2f899" />
-<img width="1900" height="906" alt="Screenshot 2026-10-25 183500" src="https://github.com/user-attachments/assets/ff5a511f-ec83-44ea-9ca2-87130f615c25" />
+Srithan Sharma
