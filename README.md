@@ -84,27 +84,15 @@ npm start
 Open your browser and navigate to http://localhost:3000.
 
 ⚠️ Limitations & Future Roadmap
-Camera Positioning & Lighting: Works best with clear, side-view or front-view squat footage with adequate lighting for optimal MediaPipe detection.
-
-Future Enhancements: Support for additional exercises (push-ups, lunges) and user progress history.
-
+Current Limitations	Future Enhancements
+Camera Angle Sensitivity: Relies on optimal side-view or front-view positioning for precise MediaPipe landmark detection.	Multi-Exercise Support: Expand tracking algorithms to support push-ups, lunges, and deadlifts.
+Lighting Dependency: Low-light environments can occasionally reduce pose tracking accuracy.	User Profiles & History: Implement cloud storage and historical progression graphs to track fitness goals over time.
 👥 Team & Credits
-Team Name: CampusSignal
-
-Company Chosen: Open Science Labs
-
-Project Name: HiperMove — AI Movement & Mobility Assistant
-
-College/University: Rajiv Gandhi Institute of Petroleum Technology (RGIPT)
-
-Team Leader: Harshad Sanjay Nandanwar (26cs3025@rgipt.ac.in)
-
-Team Members:
-
-Harshad Sanjay Nandanwar
-
-Ansum Sanal
-
-Aman R.D
-
-Srithan Sharma
+Project Detail	Information
+Team Name	CampusSignal
+Hackathon	KodeKurrent Season 2 (IEEE RGIPT)
+Track Partner	Open Science Labs
+Project Name	HiperMove — AI Movement & Mobility Assistant
+Institution	Rajiv Gandhi Institute of Petroleum Technology (RGIPT)
+Team Leader	Harshad Sanjay Nandanwar (26cs3025@rgipt.ac.in)
+Team Members	Harshad Sanjay Nandanwar, Ansum Sanal, Aman R.D, Srithan Sharma
