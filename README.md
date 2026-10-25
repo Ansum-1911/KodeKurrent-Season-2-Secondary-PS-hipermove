@@ -84,15 +84,31 @@ npm start
 Open your browser and navigate to http://localhost:3000.
 
 ⚠️ Limitations & Future Roadmap
-Current Limitations	Future Enhancements
-Camera Angle Sensitivity: Relies on optimal side-view or front-view positioning for precise MediaPipe landmark detection.	Multi-Exercise Support: Expand tracking algorithms to support push-ups, lunges, and deadlifts.
-Lighting Dependency: Low-light environments can occasionally reduce pose tracking accuracy.	User Profiles & History: Implement cloud storage and historical progression graphs to track fitness goals over time.
+🛑 Current Limitations
+Camera Angle Sensitivity: Requires proper side-view or front-view positioning to ensure MediaPipe tracks all 33 body landmarks accurately.
+
+Lighting Dependency: Low-light settings can occasionally impact frame detection quality.
+
+🔮 Future Roadmap
+Multi-Exercise Tracking: Expand movement logic to support push-ups, lunges, and deadlifts.
+
+Cloud User Profiles: Save workout history, progress graphs, and rep logs across sessions.
+
 👥 Team & Credits
-Project Detail	Information
-Team Name	CampusSignal
-Hackathon	KodeKurrent Season 2 (IEEE RGIPT)
-Track Partner	Open Science Labs
-Project Name	HiperMove — AI Movement & Mobility Assistant
-Institution	Rajiv Gandhi Institute of Petroleum Technology (RGIPT)
-Team Leader	Harshad Sanjay Nandanwar (26cs3025@rgipt.ac.in)
-Team Members	Harshad Sanjay Nandanwar, Ansum Sanal, Aman R.D, Srithan Sharma
+CampusSignal
+Hackathon: KodeKurrent Season 2 — IEEE RGIPT Student Branch
+
+Track Partner: Open Science Labs
+
+Project Name: HiperMove — AI Movement & Mobility Assistant
+
+Institution: Rajiv Gandhi Institute of Petroleum Technology (RGIPT)
+
+Core Contributors
+Team Leader: Harshad Sanjay Nandanwar (26cs3025@rgipt.ac.in)
+
+Team Member: Ansum Sanal
+
+Team Member: Aman R.D
+
+Team Member: Srithan Sharma
