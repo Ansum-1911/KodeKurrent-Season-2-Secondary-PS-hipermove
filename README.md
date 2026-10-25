@@ -1,104 +1,97 @@
-# HiperMove — AI Movement & Mobility Assistant
+# 🏋️ HiperMove — AI-Powered Squat Analysis & Coaching
 
-> Every rep, measured. Upload a short squat video, see your body-pose landmarks, get an automatic rep count and depth score, then ask Gemma 4 for a plain-language coach's note. No wearables, no extra equipment.
+[![Hackathon](https://img.shields.io/badge/Hackathon-KodeKurrent%20Season%202-orange?style=flat-square)](https://kodekurrent.ieeergipt.in/)
+[![Tech Stack](https://img.shields.io/badge/Stack-Node.js%20%7C%20Express%20%7C%20MediaPipe%20%7C%20Gemini%20API-blue?style=flat-square)](https://github.com/Ansum-1911/KodeKurrent-Season-2-Secondary-PS-hipermove)
+[![Status](https://img.shields.io/badge/Status-Completed%20%2F%20Ready%20for%20Submission-success?style=flat-square)]()
 
-Built for **Hacktoberfest Hack Day · KodeKurrent Season 2** (Jais x Open Science Labs) — problem statement: *HiperMove, AI Movement & Mobility Assistant*.
+**HiperMove** is an AI-powered fitness analysis web application built for **Hacktoberfest Hack Day — KodeKurrent Season 2** (organized by IEEE RGIPT Student Branch in collaboration with Open Science Labs). It tracks body movement, estimates squat depth and tempo, counts repetitions in real time using computer vision, and translates session metrics into plain-language coaching feedback using Gemma and the Gemini API.
 
-- **Live demo:** _add link here (or "see demo video")_
-- **Demo video:** _add link here_
-- **Team:** _add names here_
+---
 
-## What it does
+## 🔗 Submission Links
 
-1. **See** — MediaPipe Pose Landmarker finds 33 body landmarks on every frame, in the browser, and draws the skeleton over the video.
-2. **Measure** — hip height relative to body height becomes a motion signal. Swings in that signal are counted as reps; their size gives squat depth, and their timing gives seconds per rep.
-3. **Explain** — when the video ends, the session summary (reps, deepest depth, average seconds per rep, duration) is sent to **Gemma 4**, which writes a short, friendly explanation of the session.
+- 📹 **Working Demo Video:** [Watch Demo on Google Drive](https://drive.google.com/file/d/1BgMzJc0LMuEciAqRWudeyNKN1TYC-fdB/view?usp=sharing)
+- 📊 **Project Presentation (PPTX):** [View Presentation on Google Drive](https://docs.google.com/presentation/d/1LBDYwEeAw_N6Q-csoM-9Nvg9sQ5rpL5P/edit?usp=sharing&ouid=103074702273800134949&rtpof=true&sd=true)
 
-The MVP analyzes one exercise: the **squat**. It works from a front or a side view.
+---
 
-## How it uses the sponsor technologies
+## 🌟 Key Features
 
-| Technology | Role in HiperMove |
-|---|---|
-| **MediaPipe Pose Landmarker** (Google) | All actual measurements: landmarks, rep counting, depth, tempo. Runs fully in the browser. |
-| **Gemma 4** (Google, via the Gemini API) | Turns the measured numbers into a plain-language coach's note. It never does the measuring. |
-| **DigitalOcean** | Intended hosting target for the evaluator demo (see *Deployment* below). |
+- **Real-Time Pose Tracking:** Uses Google MediaPipe Pose to detect 33 3D body landmarks directly inside your browser with zero external sensors or wearables required.
+- **Rep & Depth Calculation:** Automatically calculates hip height relative to body height to detect motion signals, count repetitions, measure depth percentages, and monitor rep durations.
+- **Visual Motion Feedback:** Renders a real-time skeleton overlay, depth rail indicator, and a live hip-motion swing curve graph to visualize form dynamically.
+- **Gemma-Powered Coach Notes:** Passes workout numbers to Gemma via the Gemini API to turn raw performance stats into friendly, plain-language summaries and actionable advice.
 
-## Architecture
+---
 
-```
-Browser (public/index.html)
-  ├─ MediaPipe Pose Landmarker (tasks-vision, WASM) → landmarks, reps, depth, tempo
-  └─ POST /api/explain  (session summary only — no video leaves the device)
-        │
-Node + Express (server.js)
-  ├─ GET  /api/health
-  └─ POST /api/explain → Gemini API → Gemma 4 → coach's note
-```
+## 🛠️ Tech Stack
 
-**Privacy:** the video is analyzed locally in your browser. Only the numeric session summary is sent to the server and on to the Gemini API.
+- **Frontend:** HTML5, CSS3, JavaScript (Vanilla JS, HTML5 Canvas)
+- **Backend:** Node.js, Express.js
+- **Computer Vision:** Google MediaPipe Pose
+- **AI / LLM:** Google Gemini API / Gemma
 
-## Run it locally
+---
 
-Requirements: Node.js 18 or newer, and a free Gemini API key from [Google AI Studio](https://aistudio.google.com/).
+## 📐 Architecture & Workflow
 
+[ User Video Upload / Stream ]
+│
+▼
+[ Browser / MediaPipe Pose ] ──(33 Landmarks Extracted)──► [ Swing-Based Counter & Metrics ]
+│
+▼
+[ Express Backend ] ◄──(Session Metrics Payload)──► [ Gemini API / Gemma Coach Notes ]
+
+
+1. **See:** MediaPipe Pose finds 33 key landmarks on every video frame locally inside the user's browser, keeping video processing private and lightweight.
+2. **Measure:** Hip height relative to body height produces a continuous motion signal; swings in the signal represent reps, depth percentage, and rep duration.
+3. **Explain:** Final session numbers are passed to Gemma via the Gemini API backend to generate clear, structured coaching guidance.
+
+---
+
+## 🚀 Installation & Local Setup
+
+### 1. Clone the Repository
 ```bash
-git clone https://github.com/Ansum-1911/KodeKurrent-Season-2-Secondary-PS-hipermove.git
+git clone [https://github.com/Ansum-1911/KodeKurrent-Season-2-Secondary-PS-hipermove.git](https://github.com/Ansum-1911/KodeKurrent-Season-2-Secondary-PS-hipermove.git)
 cd KodeKurrent-Season-2-Secondary-PS-hipermove
+2. Install Dependencies
+Bash
 npm install
-```
+3. Configure Environment Variables
+Create a .env file in the root directory:
 
-Create a file named `.env` in the project folder (it is git-ignored — never commit it):
-
-```
-GEMINI_API_KEY=your_key_here
-```
-
-Start the server:
-
-```bash
+Code snippet
+PORT=3000
+GEMINI_API_KEY=your_actual_gemini_api_key_here
+4. Start the Application
+Bash
 npm start
-```
+Open your browser and navigate to http://localhost:3000.
 
-Open <http://localhost:3100>. Check <http://localhost:3100/api/health> to confirm the server is up. The page needs an internet connection on first load to fetch the MediaPipe library and model.
+⚠️ Limitations & Future Roadmap
+Camera Positioning & Lighting: Works best with clear, side-view or front-view squat footage with adequate lighting for optimal MediaPipe detection.
 
-> Open the page through the Node server, not by double-clicking `index.html` or using a "Live Server" extension.
+Future Enhancements: Support for additional exercises (push-ups, lunges) and user progress history.
 
-## How to use
+👥 Team & Credits
+Team Name: CampusSignal
 
-1. Click **Upload video** (or drag a clip onto the screen). A 10–30 second squat clip filmed from the front or side works best, with the whole body in frame.
-2. Press play and watch the skeleton, depth rail, rep counter and hip-motion graph update live.
-3. When the video ends, click **Ask Gemma 4** for the coach's note.
-4. If reps are over- or under-counted, adjust the **Sensitivity** slider (default 0.050) and replay.
+Company Chosen: Open Science Labs
 
-## Configuration
+Project Name: HiperMove — AI Movement & Mobility Assistant
 
-| Variable | Purpose |
-|---|---|
-| `GEMINI_API_KEY` | Required. Used by the server to call Gemma 4. |
-| `PORT` | Optional. Defaults to `3100`. Hosting platforms set this automatically. |
+College/University: Rajiv Gandhi Institute of Petroleum Technology (RGIPT)
 
-The server tries `gemma-4-26b-a4b-it` first and falls back to `gemma-4-31b-it`, with a 25-second timeout.
+Team Leader: Harshad Sanjay Nandanwar (26cs3025@rgipt.ac.in)
 
-## Deployment
+Team Members:
 
-The app is a single Node web service, so it can be hosted on any platform that runs `npm start` (for example DigitalOcean App Platform: connect this repo, choose a Web Service with run command `npm start`, and add `GEMINI_API_KEY` as an encrypted environment variable).
+Harshad Sanjay Nandanwar
 
-## Limitations (honest notes)
+Ansum Sanal
 
-- **Squat only** in this MVP; other exercises are future work.
-- Rep counting is **approximate**. On our 7-rep test video it counted 6, because it missed an unclear first rep. Sensitivity can be tuned, but unclear or partial reps may be missed.
-- It assumes one person, fully visible, with a mostly stationary camera. Moving the camera or stepping closer changes the signal.
-- Depth is an estimate from hip height, not a joint-angle measurement.
-- **Not medical advice.** HiperMove is informational only. Stop if anything hurts and consult a qualified professional.
+Aman R.D
 
-## Attribution
-
-- [MediaPipe Pose Landmarker](https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker) by Google (Apache 2.0) — pose estimation, loaded in the browser via `@mediapipe/tasks-vision`.
-- [Gemma 4](https://ai.google.dev/gemma) by Google, accessed through the Gemini API, subject to the Gemma terms of use.
-- Fonts: [Barlow and Barlow Condensed](https://fonts.google.com/specimen/Barlow) via Google Fonts (SIL Open Font License).
-- Built with Node.js and Express.
-
-## License
-
-MIT — see [LICENSE](LICENSE).
+Srithan Sharma
