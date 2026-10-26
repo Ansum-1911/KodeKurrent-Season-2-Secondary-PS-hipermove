@@ -1,3 +1,8 @@
+<img width="1896" height="857" alt="Screenshot 2026-10-25 183545" src="https://github.com/user-attachments/assets/ae4c7701-ffbb-4a09-b437-080c0eb9cb01" />
+<img width="1891" height="855" alt="Screenshot 2026-10-25 183537" src="https://github.com/user-attachments/assets/465eb8d3-3c35-45b1-8439-3b355945dd88" />
+<img width="752" height="548" alt="Screenshot 2026-10-25 183527" src="https://github.com/user-attachments/assets/605f6697-bce9-4de3-9e9f-029e572ea193" />
+<img width="1897" height="887" alt="Screenshot 2026-10-25 183515" src="https://github.com/user-attachments/assets/9bd031b3-eb97-47d6-a7f5-60ce68e20bda" />
+<img width="1900" height="906" alt="Screenshot 2026-10-25 183500" src="https://github.com/user-attachments/assets/831a8d48-b21b-4e64-85f5-5002df45475c" />
 # HiperMove: AI Squat Analysis and Coaching
 
 ![Hackathon](https://img.shields.io/badge/Hackathon-KodeKurrent%20Season%202-FF4A1C?style=flat-square)
