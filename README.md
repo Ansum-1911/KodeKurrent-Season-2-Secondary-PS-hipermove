@@ -1,8 +1,3 @@
-<img width="1896" height="857" alt="Screenshot 2026-10-25 183545" src="https://github.com/user-attachments/assets/ae4c7701-ffbb-4a09-b437-080c0eb9cb01" />
-<img width="1891" height="855" alt="Screenshot 2026-10-25 183537" src="https://github.com/user-attachments/assets/465eb8d3-3c35-45b1-8439-3b355945dd88" />
-<img width="752" height="548" alt="Screenshot 2026-10-25 183527" src="https://github.com/user-attachments/assets/605f6697-bce9-4de3-9e9f-029e572ea193" />
-<img width="1897" height="887" alt="Screenshot 2026-10-25 183515" src="https://github.com/user-attachments/assets/9bd031b3-eb97-47d6-a7f5-60ce68e20bda" />
-<img width="1900" height="906" alt="Screenshot 2026-10-25 183500" src="https://github.com/user-attachments/assets/831a8d48-b21b-4e64-85f5-5002df45475c" />
 # HiperMove: AI Squat Analysis and Coaching
 
 ![Hackathon](https://img.shields.io/badge/Hackathon-KodeKurrent%20Season%202-FF4A1C?style=flat-square)
@@ -71,23 +66,23 @@ Most people have no way to know whether they are squatting deeply, how steady th
 
 **Landing page** with a live animated demo of the tracking
 
-![HiperMove landing page](docs/screenshots/hero.png)
+![HiperMove landing page](https://github.com/user-attachments/assets/831a8d48-b21b-4e64-85f5-5002df45475c)
 
 **Live analysis** with skeleton overlay, hip line, depth rail and rep counter
 
-![Live analysis](docs/screenshots/live-analysis.png)
+![Live analysis with skeleton overlay, depth rail and rep counter](https://github.com/user-attachments/assets/9bd031b3-eb97-47d6-a7f5-60ce68e20bda)
 
 **Hip-motion curve and rep log** showing six detected reps
 
-![Hip motion curve and rep log](docs/screenshots/hip-motion.png)
+![Hip-motion curve and rep log](https://github.com/user-attachments/assets/605f6697-bce9-4de3-9e9f-029e572ea193)
 
 **How it works** in three steps
 
-![Three steps: see, measure, explain](docs/screenshots/how-it-works.png)
+![Three steps: see, measure, explain](https://github.com/user-attachments/assets/465eb8d3-3c35-45b1-8439-3b355945dd88)
 
 **Coach's note** powered by Gemma 4
 
-![Coach's note powered by Gemma 4](docs/screenshots/coach-note.png)
+![Coach's note powered by Gemma 4](https://github.com/user-attachments/assets/ae4c7701-ffbb-4a09-b437-080c0eb9cb01)
 
 ## How it works
 
@@ -142,8 +137,6 @@ When the video finishes, the page sends a small JSON summary (repetitions, deepe
 .
 ├── public/
 │   └── index.html        The whole frontend: UI, pose tracking, rep counting, charts
-├── docs/
-│   └── screenshots/      Images used in this README
 ├── server.js             Express server: serves public/ and exposes POST /api/explain
 ├── package.json          Dependencies and the npm start script
 ├── LICENSE               MIT license
